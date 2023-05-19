@@ -16,6 +16,7 @@ def app():
     # MELHOR JEITO DE CHUMBAR ISSO
     pnl_account = ['TotalRevenue', 'CostOfRevenue', 'GrossProfit', 'SellingGeneralAndAdministration','EBITDA', 'DepreciationAndAmortization', 'EBIT']
 
+    # Trazer informações
     comp = Company(stock)
     st.dataframe(comp.pnl_account(pnl_account = pnl_account, date = '2022-12-31'))
     st.dataframe(comp.get_wacc())

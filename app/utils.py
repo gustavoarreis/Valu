@@ -9,6 +9,8 @@ def create_input_group(group_name):
     optimist = st.sidebar.number_input("Otimista (%)", value=0.0, step= 1.0,  min_value = -100.0, max_value = 100.0,key = f"optimist_{group_name}",  format="%.1f")
     return pessimist, base, optimist
 
+
+
 class Company:
 
     def __init__(
