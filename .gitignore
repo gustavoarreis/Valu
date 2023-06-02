@@ -5,3 +5,6 @@ teste1.ipynb
 teste2.ipynb
 teste3.ipynb
 __pycache__/
+app/__pycache__/utils.cpython-311.pyc
+logs.txt
+IBOV.csv
