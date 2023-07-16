@@ -7,45 +7,6 @@ from logger import logger
 from functools import wraps
 import time
 
-# def cache_logging_decorator(func):
-#     cache_hits = {}
-
-#     def wrapper(*args, **kwargs):
-#         cache_key = f"{func.__name__}-{args}-{kwargs}"
-#         start_time = time.time()
-
-#         if cache_key in cache_hits:
-#             logger.info(f"Cache hit for {func.__name__}")
-#             result = cache_hits[cache_key]
-#         else:
-#             result = func(*args, **kwargs)
-#             cache_hits[cache_key] = result
-#             logger.info(f"Executing {func.__name__}")
-
-#         execution_time = time.time() - start_time
-#         logger.info(f"{func.__name__} executed in {execution_time} seconds")
-
-#         return result
-
-#     return wrapper
-
-
-# def cache_hit_log(func):
-#     cache = {}
-
-#     @wraps(func)
-#     def wrapper(*args, **kwargs):
-#         cache_key = f"{func.__name__}:{args}:{kwargs}"
-#         if cache_key in cache:
-#             logger.info(f"Cache hit for function: {func.__name__}")
-#         else:
-#             logger.info(f"Cache miss for function: {func.__name__}")
-#         result = func(*args, **kwargs)
-#         cache[cache_key] = result
-#         return result
-    
-#     return wrapper
-
 def timer_decorator(func):
     def wrapper(*args, **kwargs):
         start_time = time.time()
@@ -60,8 +21,8 @@ def timer_decorator(func):
 def create_input_group(group_name, value: float = 1.0, step: float = 1.0):
     st.sidebar.subheader(group_name)
     pessimist = st.sidebar.number_input("Pessimista (%)", value=value, step=step, min_value = -100.0, max_value = 100.0, key = f"pessimist_{group_name}",  format="%.1f")
-    base = st.sidebar.number_input("Moderado (%)", value=value, step = step, min_value = -100.0, max_value = 100.0, key = f"base_{group_name}",  format="%.1f")
-    optimist = st.sidebar.number_input("Otimista (%)", value=value, step= step,  min_value = -100.0, max_value = 100.0,key = f"optimist_{group_name}",  format="%.1f")
+    base = st.sidebar.number_input("Moderado (%)", value=value + step, step = step, min_value = -100.0, max_value = 100.0, key = f"base_{group_name}",  format="%.1f")
+    optimist = st.sidebar.number_input("Otimista (%)", value=value + step*2, step= step,  min_value = -100.0, max_value = 100.0,key = f"optimist_{group_name}",  format="%.1f")
     return pessimist, base, optimist
 
 @timer_decorator
@@ -101,6 +62,11 @@ class Company:
         df = self.company.get_financial_data(columns, frequency = frequency)
         assert df['currencyCode'].unique() == 'BRL', f"Dados em {df['currencyCode'].unique()[0]} e não BRL"
         return df
+
+    @timer_decorator
+    @st.cache_data
+    def get_current_market_price(self):
+        return self.company.history(period = '1d').iloc[0]['close']
     
     @timer_decorator
     @st.cache_data
@@ -125,7 +91,15 @@ class Company:
                 financials[item] = df[df.periodType == 'TTM'][item].values[0]
         df = self.company.valuation_measures
         financials['MarketCap'] = df[df.asOfDate == date]['MarketCap'].values[0]
-        financials['TotalShares'] = self.company.key_stats[self.ticker]['sharesOutstanding']
+        # financials['TotalShares'] = self.company.key_stats[self.ticker]['sharesOutstanding']
+        # Mudar
+        financials['PERatio'] = df[df.asOfDate == date]['PeRatio'].values[0]
+        financials['PbRatio'] = df[df.asOfDate == date]['PbRatio'].values[0]
+        financials['PsRatio'] = df[df.asOfDate == date]['PsRatio'].values[0]
+        financials['ForwardPeRatio'] = df[df.asOfDate == date]['ForwardPeRatio'].values[0]
+        financials['EnterprisesValueEBITDARatio'] =  df[df.asOfDate == date]['EnterprisesValueEBITDARatio'].values[0]
+        financials['EnterprisesValueRevenueRatio'] = df[df.asOfDate == date]['EnterprisesValueRevenueRatio'].values[0]
+        financials['TotalShares'] = 100000000
         return financials
     
     @timer_decorator
@@ -150,14 +124,23 @@ class Company:
     
     @timer_decorator
     @st.cache_data
+    def calculate_tax_rate(self):
+        return 0.34
+    
+    @timer_decorator
+    @st.cache_data
     def calculate_relevered_beta(self, beta: float, tax_rate: float, target_de_ratio: float):
         return beta*(1+(1-tax_rate)*target_de_ratio)
 
     @timer_decorator
     @st.cache_data
-    def calculate_market_risk_premium(self):
-        #Mudar
-        return 0.02
+    def calculate_market_risk_premium(self, market_cap: float):
+        if market_cap < 2000000000:
+            return 0.125
+        elif market_cap > 10000000000:
+            return 0.075
+        else:
+            return 0.1
 
     @timer_decorator
     @st.cache_data
