@@ -81,7 +81,7 @@ class Company:
         
     @timer_decorator
     @st.cache_data
-    def set_financials(self, df: pd.DataFrame, date: str):
+    def set_financials(self, df: pd.DataFrame, date: str, market_price: float):
         df = df[df.asOfDate == date].reset_index(drop = True)
         financials = {}
         for item in [col for col in df.columns if col not in ['periodType', 'currencyCode']]:
@@ -99,7 +99,7 @@ class Company:
         financials['ForwardPeRatio'] = df[df.asOfDate == date]['ForwardPeRatio'].values[0]
         financials['EnterprisesValueEBITDARatio'] =  df[df.asOfDate == date]['EnterprisesValueEBITDARatio'].values[0]
         financials['EnterprisesValueRevenueRatio'] = df[df.asOfDate == date]['EnterprisesValueRevenueRatio'].values[0]
-        financials['TotalShares'] = 100000000
+        financials['TotalShares'] = financials['MarketCap']/market_price
         return financials
     
     @timer_decorator

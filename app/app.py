@@ -250,7 +250,8 @@ def app2():
     comp = Company(stock)
     data = comp.get_data()
     date = comp.set_date(data)
-    financials = comp.set_financials(df = data, date = date)
+    current_price = comp.get_current_market_price()
+    financials = comp.set_financials(df = data, date = date, market_price = current_price)
     pnl_account = make_dictionary(
             TotalRevenue = financials['TotalRevenue'],
             CostOfRevenue = financials['CostOfRevenue'],
@@ -370,7 +371,7 @@ def app2():
     
 
     valuation_price = '${:.2f}'.format(np.mean([fair_price_pessimista, fair_price_moderado, fair_price_moderado]))
-    current_price = '${:.2f}'.format(comp.get_current_market_price())
+    current_price = '${:.2f}'.format(current_price)
     
     st.markdown(f"<h1 style='text-align: center;'>Indicadores</h1>", unsafe_allow_html=True)
 
@@ -381,7 +382,41 @@ def app2():
     .blue-text {
         color: blue;
         text-align: center;
-        font-size: 24px; /* Use the same font size as the h1 header for P/L */
+        font-size: 26px; /* Use the same font size as the h1 header for P/L */
+    }
+    </style>
+    """
+    st.markdown(style, unsafe_allow_html=True)
+
+
+    style = """
+    <style>
+    .black-text {
+        color: black;
+        text-align: center;
+        font-size: 26px; /* Use the same font size as the h1 header for P/L */
+    }
+    </style>
+    """
+    st.markdown(style, unsafe_allow_html=True)
+
+    style = """
+    <style>
+    .white-text {
+        color: white;
+        text-align: center;
+        font-size: 26px; /* Use the same font size as the h1 header for P/L */
+    }
+    </style>
+    """
+    st.markdown(style, unsafe_allow_html=True)
+
+    style = """
+    <style>
+    .green-text {
+        color: green;
+        text-align: center;
+        font-size: 26px; /* Use the same font size as the h1 header for P/L */
     }
     </style>
     """
@@ -420,13 +455,13 @@ def app2():
     c9, c10, c11, c12 = st.columns(4)
 
     with c9:
-        st.write('---')
-        st.markdown(f"<h1 style='text-align: left;'>Crescimento</h1>", unsafe_allow_html=True)
-        st.markdown(f"<h1 style='text-align: left;'>ROIC</h1>", unsafe_allow_html=True)
-        st.markdown(f"<h1 style='text-align: left;'>Margem FCF</h1>", unsafe_allow_html=True)
-        st.markdown(f"<h1 style='text-align: left;'>Preço Alvo</h1>", unsafe_allow_html=True)
-        st.markdown(f"<h1 style='text-align: left;'>Preço Atual</h1>", unsafe_allow_html=True)
-        st.markdown(f"<h1 style='text-align: left;'>Potencial</h1>", unsafe_allow_html=True)
+        st.markdown(f"<p class='white-text'>Resultados</h1>", unsafe_allow_html=True)
+        st.markdown(f"<p class='black-text'>Crescimento</h1>", unsafe_allow_html=True)
+        st.markdown(f"<p class='black-text'>ROIC</h1>", unsafe_allow_html=True)
+        st.markdown(f"<p class='black-text'>Margem FCF</h1>", unsafe_allow_html=True)
+        st.markdown(f"<p class='black-text'>Preço Alvo</h1>", unsafe_allow_html=True)
+        st.markdown(f"<p class='black-text'>Preço Atual</h1>", unsafe_allow_html=True)
+        st.markdown(f"<p class='black-text'>Potencial</h1>", unsafe_allow_html=True)
         # c13, c14 = st.columns(2)
         # with c13:
         #     st.write('Preço Atual')
@@ -438,19 +473,10 @@ def app2():
         # with c16:
         #     st.write('X')
 
-    style = """
-    <style>
-    .green-text {
-        color: green;
-        text-align: center;
-        font-size: 24px; /* Use the same font size as the h1 header for P/L */
-    }
-    </style>
-    """
-    st.markdown(style, unsafe_allow_html=True)
+    
 
     with c10:
-        st.markdown(f"<h1 style='text-align: center;'>Pessimista</h1>", unsafe_allow_html=True)
+        st.markdown(f"<p class='black-text'>Pessimista</h1>", unsafe_allow_html=True)
         st.markdown(f"<p class='blue-text'>{'{:.0%}'.format(lt_growth[0]/100)}</p>", unsafe_allow_html=True)
         st.markdown(f"<p class='blue-text'>{'{:.0%}'.format(roic[0]/100)}</p>", unsafe_allow_html=True)
         st.markdown(f"<p class='blue-text'>{'{:.0%}'.format(fcf_margin[0]/100)}</p>", unsafe_allow_html=True)
@@ -460,7 +486,7 @@ def app2():
         st.write("---")
 
     with c11:
-        st.markdown(f"<h1 style='text-align: center;'>Moderado</h1>", unsafe_allow_html=True)
+        st.markdown(f"<p class='black-text'>Moderado</h1>", unsafe_allow_html=True)
         st.markdown(f"<p class='blue-text'>{'{:.0%}'.format(lt_growth[1]/100)}</p>", unsafe_allow_html=True)
         st.markdown(f"<p class='blue-text'>{'{:.0%}'.format(roic[1]/100)}</p>", unsafe_allow_html=True)
         st.markdown(f"<p class='blue-text'>{'{:.0%}'.format(fcf_margin[1]/100)}</p>", unsafe_allow_html=True)
@@ -470,7 +496,7 @@ def app2():
         st.write("---")
 
     with c12:
-        st.markdown(f"<h1 style='text-align: center;'>Otimista</h1>", unsafe_allow_html=True)
+        st.markdown(f"<p class='black-text'>Otimista</h1>", unsafe_allow_html=True)
         st.markdown(f"<p class='blue-text'>{'{:.0%}'.format(lt_growth[2]/100)}</p>", unsafe_allow_html=True)
         st.markdown(f"<p class='blue-text'>{'{:.0%}'.format(roic[2]/100)}</p>", unsafe_allow_html=True)
         st.markdown(f"<p class='blue-text'>{'{:.0%}'.format(fcf_margin[2]/100)}</p>", unsafe_allow_html=True)
@@ -478,6 +504,59 @@ def app2():
         st.markdown(f"<p class='green-text'>{current_price}</p>", unsafe_allow_html=True)
         st.markdown(f"<p class='green-text'>{'{:.0%}'.format(fair_price_otimista/comp.get_current_market_price() - 1)}</p>", unsafe_allow_html=True)
         st.write("---")
+
+    # data = {
+    # 'Category': ['Pessimista', 'Moderado', 'Otimista'],
+    # 'lt_growth': [lt_growth[0], lt_growth[1], lt_growth[2]],
+    # 'roic': [roic[0], roic[1], roic[2]],
+    # 'fcf_margin': [fcf_margin[0], fcf_margin[1], fcf_margin[2]],
+    # 'Fair Price': [fair_price_pessimista, fair_price_moderado, fair_price_otimista],
+    # 'Current Price': [current_price, current_price, current_price],
+    # 'Price Difference': [
+    #     fair_price_pessimista / comp.get_current_market_price() - 1,
+    #     fair_price_moderado / comp.get_current_market_price() - 1,
+    #     fair_price_otimista / comp.get_current_market_price() - 1
+    # ]
+    # }
+
+    # # Create a DataFrame from the data
+    # df = pd.DataFrame(data)
+
+    # table_style = """
+    # <style>
+    #     .custom-table {
+    #         width: 100%;
+    #         border-collapse: collapse;
+    #         border: 2px solid #ccc;
+    #         font-size: 18px;
+    #     }
+    #     .custom-table th, .custom-table td {
+    #         border: 2px solid #ccc;
+    #         padding: 10px;
+    #         text-align: center;
+    #     }
+    #     .custom-table th {
+    #         background-color: #f2f2f2;
+    #         color: #333;
+    #         font-weight: bold;
+    #     }
+    #     .custom-table tr:nth-child(even) {
+    #         background-color: #f9f9f9;
+    #     }
+    #     .custom-table td.blue-text {
+    #         color: blue;
+    #     }
+    # </style>
+    # """
+
+    # # Display the DataFrame as a table with custom styling and blue text for numerical values
+    # st.markdown(table_style, unsafe_allow_html=True)
+
+
+    # st.table(df.style.set_table_attributes("class='custom-table'"))
+
+    # # Display the DataFrame as a table
+    # # st.table(df)
 
     execution_time = time.time() - start
     logger.info(f"Page executed in {execution_time} seconds.\n")
