@@ -2,8 +2,8 @@
 # $ conda create --name <env> --file <this file>
 # platform: linux-64
 
-_libgcc_mutex=0.1=main
-_openmp_mutex=5.1=1_gnu
+# _libgcc_mutex=0.1=main
+# _openmp_mutex=5.1=1_gnu
 abseil-cpp=20211102.0=hd4dd3e8_0
 altair=4.1.0=py_1
 arrow-cpp=11.0.0=py311ha0d4687_0
