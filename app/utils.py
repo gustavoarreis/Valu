@@ -91,8 +91,6 @@ class Company:
                 financials[item] = df[df.periodType == 'TTM'][item].values[0]
         df = self.company.valuation_measures
         financials['MarketCap'] = df[df.asOfDate == date]['MarketCap'].values[0]
-        # financials['TotalShares'] = self.company.key_stats[self.ticker]['sharesOutstanding']
-        # Mudar
         financials['PERatio'] = df[df.asOfDate == date]['PeRatio'].values[0]
         financials['PbRatio'] = df[df.asOfDate == date]['PbRatio'].values[0]
         financials['PsRatio'] = df[df.asOfDate == date]['PsRatio'].values[0]

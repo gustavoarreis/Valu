@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import logging
 import time
+import pickle
 from logger import logger
 from utils import create_input_group, make_dictionary, Company
 
@@ -27,8 +28,11 @@ def app():
         st.image('assets/logo.png', use_column_width=False, width=300)
 
     # ACHAR LISTA DE TODAS AS AÇÕES
+    with open ('assets/stocks', 'rb') as fp:
+        stocklist = pickle.load(fp)
+
     with c2:
-        stock_list = ['B3SA3.SA', 'PETR4.SA', 'ITUB3.SA', 'ITUB4.SA', 'ELET3.SA', 'ARZZ3.SA']
+        stock_list = stocklist
         st.write('')
         st.write('')
         stock = st.selectbox('Selecione a ação', options = stock_list)
@@ -239,8 +243,11 @@ def app2():
         st.image('assets/logo.png', use_column_width=False, width=300)
 
     # ACHAR LISTA DE TODAS AS AÇÕES
+    with open ('assets/stocks', 'rb') as fp:
+        stocklist = pickle.load(fp)
+
     with c2:
-        stock_list = ['B3SA3.SA', 'PETR4.SA', 'ITUB3.SA', 'ITUB4.SA', 'ELET3.SA', 'ARZZ3.SA']
+        stock_list = stocklist
         st.write('')
         st.write('')
         stock = st.selectbox('Selecione a ação', options = stock_list)
